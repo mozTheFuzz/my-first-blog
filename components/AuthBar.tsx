@@ -6,28 +6,7 @@ import type { Session } from "@/lib/session";
 
 export default function AuthBar({ session }: { session: Session | null }) {
   const router = useRouter();
-  const [name, setName] = useState("");
-  const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
-
-  async function login(e: React.FormEvent) {
-    e.preventDefault();
-    setBusy(true);
-    setError(null);
-    const res = await fetch("/api/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name }),
-    });
-    const data = await res.json().catch(() => ({}));
-    setBusy(false);
-    if (!res.ok) {
-      setError(data.error ?? "登入失敗");
-      return;
-    }
-    setName("");
-    router.refresh();
-  }
 
   async function logout() {
     setBusy(true);
@@ -46,16 +25,8 @@ export default function AuthBar({ session }: { session: Session | null }) {
   }
 
   return (
-    <form onSubmit={login} className="auth-bar">
-      <input
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        placeholder="輸入暱稱登入"
-        required
-        maxLength={30}
-      />
-      <button type="submit" disabled={busy} className="button-small">登入</button>
-      {error && <span className="error">{error}</span>}
-    </form>
+    <div className="auth-bar">
+      <a href="/api/auth/line" className="button-small line-button">使用 LINE 登入</a>
+    </div>
   );
 }
