@@ -17,6 +17,10 @@ const safeFetch: typeof fetch = async (input, init) => {
   });
 };
 
+// consistency: "strong"
+// 線上的 Blobs 預設走 edge 快取，讀取是最終一致（README：drift up to 60 seconds），
+// 導致登入或留言後立刻讀到舊資料、重新整理才看到。這個部落格每次寫入後都會馬上讀，
+// 改走未快取的 origin 讀取。另可避免 listPosts 讀到空列表而重寫範例文章。
 export function blobStore(name: string) {
-  return getStore({ name, fetch: safeFetch });
+  return getStore({ name, fetch: safeFetch, consistency: "strong" });
 }
