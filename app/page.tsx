@@ -7,7 +7,10 @@ export default async function HomePage() {
   const posts = await listPosts();
   return (
     <>
-      <h1>文章列表</h1>
+      <div className="toolbar">
+        <h1>文章列表</h1>
+        <Link href="/posts/new" className="button">新增文章</Link>
+      </div>
       <ul className="post-list">
         {posts.map((post) => (
           <li key={post.id} className="post-card">

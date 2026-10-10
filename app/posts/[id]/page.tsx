@@ -10,8 +10,9 @@ export default async function PostPage({ params }: { params: Promise<{ id: strin
   if (!post) notFound();
   return (
     <article>
-      <p>
+      <p className="toolbar">
         <Link href="/">← 返回列表</Link>
+        <Link href={`/posts/${post.id}/edit`} className="button">編輯文章</Link>
       </p>
       <h1>{post.title}</h1>
       <p className="summary">{post.summary}</p>

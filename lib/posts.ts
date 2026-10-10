@@ -61,3 +61,29 @@ export async function getPost(id: string): Promise<Post | null> {
   await seedIfEmpty();
   return (await store().get(id, { type: "json" })) as Post | null;
 }
+
+export type PostInput = { title: string; summary: string; content: string };
+
+export function validatePostInput(body: unknown): PostInput | string {
+  if (typeof body !== "object" || body === null) return "格式錯誤";
+  const { title, summary, content } = body as Record<string, unknown>;
+  if (typeof title !== "string" || !title.trim()) return "標題不可空白";
+  if (typeof summary !== "string" || !summary.trim()) return "摘要不可空白";
+  if (typeof content !== "string" || !content.trim()) return "內文不可空白";
+  return { title: title.trim(), summary: summary.trim(), content: content.trim() };
+}
+
+export async function updatePost(id: string, input: PostInput): Promise<Post | null> {
+  const existing = await getPost(id);
+  if (!existing) return null;
+  const updated: Post = { ...existing, ...input, updatedAt: new Date().toISOString() };
+  await store().setJSON(id, updated);
+  return updated;
+}
+
+export async function createPost(input: PostInput): Promise<Post> {
+  const now = new Date().toISOString();
+  const post: Post = { id: crypto.randomUUID(), ...input, createdAt: now, updatedAt: now };
+  await store().setJSON(post.id, post);
+  return post;
+}
