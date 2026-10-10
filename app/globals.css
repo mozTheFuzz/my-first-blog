@@ -20,6 +20,7 @@ a:hover { text-decoration: underline; }
   border-bottom: 1px solid var(--border);
   background: var(--card);
   padding: 12px 16px;
+  display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap;
 }
 .site-title { font-weight: 700; color: var(--fg); font-size: 1.1rem; }
 .container { max-width: 720px; margin: 0 auto; padding: 24px 16px; }
@@ -57,3 +58,10 @@ a:hover { text-decoration: underline; }
 .comment-meta { display: flex; justify-content: space-between; gap: 12px; font-size: 0.9rem; color: var(--muted); }
 .comment p { margin: 8px 0 0; white-space: pre-wrap; }
 .muted { color: var(--muted); }
+.auth-bar { display: flex; align-items: center; gap: 8px; margin: 0; }
+.auth-bar input { font: inherit; padding: 5px 8px; border: 1px solid var(--border); border-radius: 6px; }
+.button-small {
+  padding: 5px 12px; border: none; border-radius: 6px; background: var(--accent); color: #fff;
+  font: inherit; font-size: 0.9rem; cursor: pointer;
+}
+.button-small:disabled { opacity: 0.6; cursor: default; }

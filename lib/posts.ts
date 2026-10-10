@@ -1,4 +1,4 @@
-import { getStore } from "@netlify/blobs";
+import { blobStore } from "@/lib/blobs";
 
 export type Post = {
   id: string;
@@ -34,7 +34,7 @@ const SEED_POSTS: Omit<Post, "createdAt" | "updatedAt">[] = [
 ];
 
 function store() {
-  return getStore("posts");
+  return blobStore("posts");
 }
 
 async function seedIfEmpty(): Promise<void> {

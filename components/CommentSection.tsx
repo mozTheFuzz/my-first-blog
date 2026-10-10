@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import type { Comment } from "@/lib/comments";
+import { formatDateTime } from "@/lib/format";
 
 type Props = { postId: string; comments: Comment[] };
 
@@ -43,7 +44,7 @@ export default function CommentSection({ postId, comments }: Props) {
             <li key={c.id} className="comment">
               <div className="comment-meta">
                 <strong>{c.authorName}</strong>
-                <time dateTime={c.createdAt}>{new Date(c.createdAt).toLocaleString("zh-TW")}</time>
+                <time dateTime={c.createdAt}>{formatDateTime(c.createdAt)}</time>
               </div>
               <p>{c.body}</p>
             </li>

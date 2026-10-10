@@ -1,4 +1,4 @@
-import { getStore } from "@netlify/blobs";
+import { blobStore } from "@/lib/blobs";
 
 export type Comment = {
   id: string;
@@ -11,7 +11,7 @@ export type Comment = {
 export type CommentInput = { authorName: string; body: string };
 
 function store() {
-  return getStore("comments");
+  return blobStore("comments");
 }
 
 // key 格式：{postId}/{commentId}，用前綴列出同一篇文章的留言
