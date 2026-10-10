@@ -1,15 +1,16 @@
 import Link from "next/link";
 import { listPosts } from "@/lib/posts";
+import { getSession } from "@/lib/session";
 
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
-  const posts = await listPosts();
+  const [posts, session] = await Promise.all([listPosts(), getSession()]);
   return (
     <>
       <div className="toolbar">
         <h1>文章列表</h1>
-        <Link href="/posts/new" className="button">新增文章</Link>
+        {session && <Link href="/posts/new" className="button">新增文章</Link>}
       </div>
       <ul className="post-list">
         {posts.map((post) => (

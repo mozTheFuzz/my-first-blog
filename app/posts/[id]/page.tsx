@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import CommentSection from "@/components/CommentSection";
 import { listComments } from "@/lib/comments";
 import { getPost } from "@/lib/posts";
+import { getSession } from "@/lib/session";
 
 export const dynamic = "force-dynamic";
 
@@ -10,12 +11,12 @@ export default async function PostPage({ params }: { params: Promise<{ id: strin
   const { id } = await params;
   const post = await getPost(id);
   if (!post) notFound();
-  const comments = await listComments(id);
+  const [comments, session] = await Promise.all([listComments(id), getSession()]);
   return (
     <article>
       <p className="toolbar">
         <Link href="/">← 返回列表</Link>
-        <Link href={`/posts/${post.id}/edit`} className="button">編輯文章</Link>
+        {session && <Link href={`/posts/${post.id}/edit`} className="button">編輯文章</Link>}
       </p>
       <h1>{post.title}</h1>
       <p className="summary">{post.summary}</p>
@@ -27,7 +28,7 @@ export default async function PostPage({ params }: { params: Promise<{ id: strin
       <p>
         <Link href="/">← 返回列表</Link>
       </p>
-      <CommentSection postId={post.id} comments={comments} />
+      <CommentSection postId={post.id} comments={comments} session={session} />
     </article>
   );
 }

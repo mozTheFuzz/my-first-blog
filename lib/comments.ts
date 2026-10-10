@@ -3,12 +3,14 @@ import { blobStore } from "@/lib/blobs";
 export type Comment = {
   id: string;
   postId: string;
+  authorId?: string; // 任務 3 期間建立的舊留言沒有這個欄位
   authorName: string;
   body: string;
   createdAt: string;
 };
 
-export type CommentInput = { authorName: string; body: string };
+export type CommentAuthor = { id: string; name: string };
+export type CommentInput = { body: string };
 
 function store() {
   return blobStore("comments");
@@ -21,10 +23,9 @@ function key(postId: string, commentId: string) {
 
 export function validateCommentInput(body: unknown): CommentInput | string {
   if (typeof body !== "object" || body === null) return "格式錯誤";
-  const { authorName, body: text } = body as Record<string, unknown>;
-  if (typeof authorName !== "string" || !authorName.trim()) return "暱稱不可空白";
+  const { body: text } = body as Record<string, unknown>;
   if (typeof text !== "string" || !text.trim()) return "留言不可空白";
-  return { authorName: authorName.trim().slice(0, 50), body: text.trim().slice(0, 2000) };
+  return { body: text.trim().slice(0, 2000) };
 }
 
 export async function listComments(postId: string): Promise<Comment[]> {
@@ -37,11 +38,17 @@ export async function listComments(postId: string): Promise<Comment[]> {
     .sort((a, b) => a.createdAt.localeCompare(b.createdAt));
 }
 
-export async function createComment(postId: string, input: CommentInput): Promise<Comment> {
+export async function createComment(
+  postId: string,
+  author: CommentAuthor,
+  input: CommentInput,
+): Promise<Comment> {
   const comment: Comment = {
     id: crypto.randomUUID(),
     postId,
-    ...input,
+    authorId: author.id,
+    authorName: author.name,
+    body: input.body,
     createdAt: new Date().toISOString(),
   };
   await store().setJSON(key(postId, comment.id), comment);
