@@ -14,6 +14,17 @@ export default function CommentSection({ postId, comments, session }: Props) {
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
 
+  async function onDelete(commentId: string) {
+    setError(null);
+    const res = await fetch(`/api/posts/${postId}/comments/${commentId}`, { method: "DELETE" });
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}));
+      setError(data.error ?? "刪除失敗");
+      return;
+    }
+    router.refresh();
+  }
+
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setSaving(true);
@@ -44,9 +55,14 @@ export default function CommentSection({ postId, comments, session }: Props) {
             <li key={c.id} className="comment">
               <div className="comment-meta">
                 <strong>{c.authorName}</strong>
-                <time dateTime={c.createdAt}>
-                  {formatDateTime(c.createdAt)}
-                </time>
+                <span className="comment-right">
+                  <time dateTime={c.createdAt}>{formatDateTime(c.createdAt)}</time>
+                  {session && c.authorId === session.userId && (
+                    <button type="button" className="link-button" onClick={() => onDelete(c.id)}>
+                      刪除
+                    </button>
+                  )}
+                </span>
               </div>
               <p>{c.body}</p>
             </li>

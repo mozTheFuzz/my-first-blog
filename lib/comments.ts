@@ -54,3 +54,11 @@ export async function createComment(
   await store().setJSON(key(postId, comment.id), comment);
   return comment;
 }
+
+export async function getComment(postId: string, commentId: string): Promise<Comment | null> {
+  return (await store().get(key(postId, commentId), { type: "json" })) as Comment | null;
+}
+
+export async function deleteComment(postId: string, commentId: string): Promise<void> {
+  await store().delete(key(postId, commentId));
+}
